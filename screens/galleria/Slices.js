@@ -4,13 +4,14 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
-import { Snackbar } from 'react-native-paper'; // Import Snackbar
+import { Snackbar } from 'react-native-paper';
 import API_URL from '@/server/constants/URL';
 import Post from '@/components/galleria/Post';
+import { Ionicons } from '@expo/vector-icons';
 
 const Slices = () => {
   const [posts, setPosts] = useState([]);
-  const screenheight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get('window').height;
 
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -18,24 +19,13 @@ const Slices = () => {
   const [totalPages, setTotalPages] = useState(1);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [refreshing, setRefreshing] = useState(false); // Add this state
-  const [noPostsFound, setNoPostsFound] = useState(false); // Add this state
-  const [focusedIndex, setFocusedIndex] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [noPostsFound, setNoPostsFound] = useState(false);
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
   const dispatch = useDispatch();
   const postCommentCreate = useSelector((state) => state.postCommentCreate);
   const { success: successCreate } = postCommentCreate;
-
-  // useEffect(() => {
-  //   if (!userInfo) {
-  //     const intervalId = setInterval(() => {
-  //       navigation.navigate('Login');
-  //     }, 500); // Reduced interval time to 500 milliseconds
-  
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, [userInfo, navigation]);
 
   const fetchData = async () => {
     try {
@@ -50,9 +40,9 @@ const Slices = () => {
       if (response.data.results && response.data.results.length > 0) {
         setPosts((prevPosts) => [...prevPosts, ...response.data.results]);
         setTotalPages(response.data.total_pages);
-        setNoPostsFound(false); // Reset noPostsFound state
+        setNoPostsFound(false);
       } else {
-        setNoPostsFound(true); // Set noPostsFound state to true
+        setNoPostsFound(true);
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -66,17 +56,19 @@ const Slices = () => {
   }, [page, searchText]);
 
   const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+    if (page < totalPages) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   const handleRefresh = async () => {
-    setRefreshing(true); // Start the refreshing animation
-    setPage(1); // Reset page to 1 before fetching new data
-    setPosts([]); // Clear current posts to avoid duplicates
+    setRefreshing(true);
+    setPage(1);
+    setPosts([]);
 
     await fetchData();
 
-    setRefreshing(false); // Stop the refreshing animation
+    setRefreshing(false);
   };
 
   const formatTimestamp = (timestamp) => {
@@ -109,55 +101,55 @@ const Slices = () => {
     </View>
   );
 
-  return (
+  const renderFooter = () => {
+    if (!loading) return null;
 
-    <View style={{backgroundColor:"black", minHeight: screenheight}}>
-          {!userInfo ? 
-          <View>
-
-      <TouchableOpacity
-      onPress={navigation.navigate("Login")}
-      style={styles.button}
-      >
-      <Text style={{color:"white"}}>Sign In</Text>
-
-      </TouchableOpacity>
-      
-      {/* <TouchableOpacity>sign in</TouchableOpacity> */}
+    return (
+      <View style={styles.footer}>
+        <ActivityIndicator color="red" />
+        <Text style={styles.loadingText}>Loading more videos...</Text>
       </View>
-      :
+    );
+  };
 
-    <View style={styles.screen}>
-      {noPostsFound && (
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.refreshButtonText}>Refresh</Text>
-        </TouchableOpacity>
+  return (
+    <View style={{ backgroundColor: "black", minHeight: screenHeight }}>
+      {!userInfo ? (
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Login')}
+            style={styles.button}
+          >
+            <Text style={{ color: "white" }}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.screen}>
+          {noPostsFound && (
+            <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+              <Text style={styles.refreshButtonText}>Refresh</Text>
+            </TouchableOpacity>
+          )}
+          <FlatList
+            data={posts}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            onRefresh={handleRefresh}
+            refreshing={refreshing}
+            ListFooterComponent={renderFooter}
+            contentContainerStyle={styles.contentContainer}
+          />
+          <Snackbar
+            visible={noPostsFound}
+            duration={3000}
+            style={{ backgroundColor: 'red' }}
+          >
+            No posts found
+          </Snackbar>
+        </View>
       )}
-      <FlatList
-        data={posts}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${item.id}-${index}`} // Ensure unique keys
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        onRefresh={handleRefresh}
-        refreshing={refreshing} // Add this prop
-        ListFooterComponent={
-          loading && (
-            <View style={styles.loaderContainer}>
-              <ActivityIndicator color="red" />
-            </View>
-          )
-        }       />
-      <Snackbar
-        visible={noPostsFound}
-        duration={3000}
-        style={{ backgroundColor: 'red' }}
-      >
-        No posts found
-      </Snackbar>
-    </View>
-
-}
     </View>
   );
 };
@@ -177,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 10,
-    zIndex: 1, // Ensure the button is above the FlatList
+    zIndex: 1,
   },
   refreshButtonText: {
     color: 'white',
@@ -188,12 +180,34 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    marginVertical: 10, // Add some space between buttons
+    marginVertical: 10,
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: Dimensions.get('window').height, // Ensure the loader container is full height
+    height: Dimensions.get('window').height,
+  },
+  loadMoreContainer: {
+    backgroundColor: 'black',
+    paddingBottom: 10,
+  },
+  loadMoreButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+    backgroundColor: 'black',
+  },
+  contentContainer: {
+    paddingBottom: 10,
+  },
+  footer: {
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'red',
+    marginTop: 10,
   },
 });

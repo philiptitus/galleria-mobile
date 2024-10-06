@@ -89,8 +89,8 @@ const ResetHandler = (e) => {
 
   return (
     <ImageBackground
-      source={{ uri: 'http://promac.epizy.com/login.jpg' }}
-      style={styles.backgroundImage}
+    source={require('../../assets/images/login.jpg')}
+    style={styles.backgroundImage}
     >
 {/* {errorLogin && enqueueSnackbar(errorLogin, { variant: 'error' })
 } */}

@@ -29,6 +29,7 @@ const Homescreen = () => {
   const { error: errorFollow, success: successFollow } = followUserState;
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
+  
   const dispatch = useDispatch();
   const postCommentCreate = useSelector((state) => state.postCommentCreate);
   const { success: successCreate } = postCommentCreate;
@@ -71,11 +72,16 @@ const Homescreen = () => {
     setLoading(false);
   }  };
 
+
+
+  
+
   useFocusEffect(
     useCallback(() => {
       console.log('Screen focused');
       if (userInfo) {
         fetchData();
+        console.log(userInfo)
       }
       return () => {
         console.log('Screen unfocused');

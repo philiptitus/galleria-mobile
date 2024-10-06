@@ -49,10 +49,9 @@ const BookmarksScreen = () => {
   }, [userInfo, navigation]);
 
   const fetchData = async () => {
+    setLoading(true);
 
     try {
-      setLoading(true);
-
       const config = {
         headers: {
           'Content-type': 'application/json',
@@ -61,10 +60,12 @@ const BookmarksScreen = () => {
       };
 
       const response = await axios.get(`${API_URL}/api/posts/bookmarks/?name=${searchText}&page=${page}`, config);
-      setPosts((prevPosts) => [...prevPosts, ...response.data.results]);
-      console.log("Fetching albbbbbbbbummmmmm")
-
-      setTotalPages(response.data.total_pages);
+      if (response.data && response.data.results) {
+        setPosts((prevPosts) => [...prevPosts, ...response.data.results]);
+        setTotalPages(response.data.total_pages);
+      } else {
+        setPosts([]); // Default to an empty array if response data is not as expected
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {

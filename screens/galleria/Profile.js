@@ -169,8 +169,7 @@ useFocusEffect(
     console.log('Screen focused');
     if (userInfo?.email === user?.email) {
       if (user?.is_tutorial === false) {
-
-        navigation.navigate('tutorial');
+console.log("l")
       }
     } else {
       refreshHandler();

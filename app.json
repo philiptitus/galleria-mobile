@@ -1,37 +1,62 @@
 {
+  "name": "galleria",
+  "displayName": "galleria",
   "expo": {
     "name": "galleria",
     "slug": "galleria",
-    "version": "1.0.0",
+    "version": "1.1.3",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/app-logo.png",
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#B00326"
     },
-    "ios": {
-      "supportsTablet": true
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
+    "jsEngine": "hermes",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
+      "icon": "./assets/images/app-logo2.png",
+      "package": "com.philiptitus.galleria",
+      "versionCode": 3,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/app-logo3.png",
+        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
       },
-      "package": "com.philiptitus.galleria"
+      "splash": {
+        "image": "./assets/splash.png",
+        "backgroundColor": "#B00326"
+      }
+    },
+    "ios": {
+      "icon": "./assets/images/app-icon-ios.png",
+      "supportsTablet": true,
+      "buildNumber": "2",
+      "bundleIdentifier": "com.msbridgerbyphil",
+      "splash": {
+        "image": "./assets/splash.png",
+        "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
+        "backgroundColor": "#B00326"
+      }
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/app-icon-web-favicon.png",
+      "splash": {
+        "image": "./assets/images/splash-logo-web.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      },
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
       "expo-video"
     ],
-    "experiments": {
-      "typedRoutes": true
+    "eas": {
+      "projectId": "b25a9cd0-9eef-4123-af1c-29d3707c8110"
     },
     "extra": {
       "router": {
