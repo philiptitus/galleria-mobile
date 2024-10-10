@@ -21,7 +21,7 @@
     "android": {
       "icon": "./assets/images/app-logo2.png",
       "package": "com.philiptitus.galleria",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-logo3.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -67,9 +67,10 @@
       }
     },
     "notification": {
-  "icon": ".assets/images/res/drawable-hdpi/notification_icon.png",
-  "color": "#ff0000"
-}
+      "icon": "./assets/images/notification_icon.png",
+      "color": "#ff0000"
+
+    }
 
   }
 }

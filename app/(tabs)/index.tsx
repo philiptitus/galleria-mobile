@@ -11,6 +11,7 @@ import * as Device from 'expo-device';
 import * as Updates from 'expo-updates'; // Import expo-updates for OTA updates
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { sendTokenToBackend } from '@/server/actions/notificationActions';
 // import { sendTokenToBackend } from '../../server/actions/postActions';
 
 // Function to register for push notifications and get the token
@@ -71,7 +72,7 @@ const PushNotificationSetup = () => {
     async function setupPushNotifications() {
       const token = await registerForPushNotificationsAsync();
       if (token) {
-        // await dispatch(sendTokenToBackend(token, userInfo));
+        await dispatch(sendTokenToBackend(token, userInfo));
         console.log(token)
       }
     }
