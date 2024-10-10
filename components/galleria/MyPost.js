@@ -58,7 +58,7 @@ const MyPost = ({ date, caption, description, avi, name, id, currentUserEmail, l
 
 
   const LeftContent = () => (
-      <Image source={{ uri: API_URL + avi }} style={{ width: 50, height: 50, borderRadius: 25 }} />
+      <Image source={{ uri: avi }} style={{ width: 50, height: 50, borderRadius: 25 }} />
   );
 
   const handleExpandClick = () => setExpanded(!expanded);
@@ -90,7 +90,7 @@ const MyPost = ({ date, caption, description, avi, name, id, currentUserEmail, l
             <Card.Content>
               {poster?.isSlice ? (
                 <View>
-                  <VideoScreen post={API_URL + poster.video} />
+                  <VideoScreen post={ poster.video} />
                 </View>
               ) : (
                 <Carousel post={poster} />

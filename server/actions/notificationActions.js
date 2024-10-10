@@ -38,7 +38,49 @@ import API_URL from '@/server/constants/URL'
 
 
 
+export const sendTokenToBackend = (token) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: 'SEND_TOKEN_REQUEST' });
+console.log(token)
+        const {
+            userLogin: { userInfo },
+        } = getState();
 
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+
+        const response = await fetch(`${API_URL}/api/notifications/register-push-token/`, {
+            method: 'POST',
+            headers: config.headers,
+            body: JSON.stringify({
+                token: token,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send token to backend');
+        }
+
+        const data = await response.json();
+
+        dispatch({
+            type: 'SEND_TOKEN_SUCCESS',
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: 'SEND_TOKEN_FAIL',
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        });
+    }
+};
 
 
 

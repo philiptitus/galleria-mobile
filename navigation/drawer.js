@@ -10,15 +10,9 @@ import { createPost } from "@/server/actions/postActions";
 import { POST_CREATE_RESET } from "@/server/constants/postConstants";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_URL from '@/server/constants/URL';
-import Test from '@/screens/galleria/Test'
-import Chat from '@/screens/galleria/Chat'
-import NewPost from '@/screens/galleria/NewPost'
-
-
-
-
-
-
+import Test from '@/screens/galleria/Test';
+import Chat from '@/screens/galleria/Chat';
+import NewPost from '@/screens/galleria/NewPost';
 
 const Drawer = createDrawerNavigator();
 
@@ -30,33 +24,26 @@ export const MyDrawer = () => {
   const postCreate = useSelector((state) => state.postCreate);
   const { success, loading, error, post } = postCreate;
   const [navigated, setNavigated] = useState(false);
-
-
   
   const userDetails = useSelector((state) => state.userDetails);
-  const {  user } = userDetails;
+  const { user } = userDetails;
   const navigatedRef = useRef(false);
 
   const logoutHandler = () => {
     dispatch(logout()); // Dispatch the logout action
-    navigation.navigate('Login'); 
-    console.log("Pressssssssssss")
-    // Navigate to the login screen
+    navigation.navigate('Login');
+    console.log("Pressssssssssss");
   };
-
-
-
-
 
   useEffect(() => {
     if (!userInfo && !navigatedRef.current) {    
-        const interval = setInterval(() => {
-          if (!navigatedRef.current) {
-            logoutHandler();
-            navigatedRef.current = true;
-            clearInterval(interval); // Clear the interval immediately after navigation
-          }
-        }, 1000);
+      const interval = setInterval(() => {
+        if (!navigatedRef.current) {
+          logoutHandler();
+          navigatedRef.current = true;
+          clearInterval(interval);
+        }
+      }, 1000);
 
       return () => clearInterval(interval); // Clear interval on component unmount
     }
@@ -68,22 +55,18 @@ export const MyDrawer = () => {
         return (
           <SafeAreaView
             style={{
-              marginTop: "30px",
+              marginTop: 30,
               flex: 1,
-              backgroundColor:"#A91D3A",
-              color:"red"
+              backgroundColor: "#A91D3A",
             }}
           >
-            
             <View style={{ flex: 1 }}>
-              <TouchableOpacity  onPress={() => navigation.navigate('Profile')}>
-
-              <Image 
-                source={{ uri: `${API_URL}${userInfo?.avi}` }} 
-                style={{ width: 150, height: 150, borderRadius: 75, margin: 30, marginLeft: 70 }}
+              <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                <Image 
+                  source={{ uri: `${API_URL}${userInfo?.avi}` }} 
+                  style={{ width: 150, height: 150, borderRadius: 75, margin: 30, marginLeft: 70 }}
                 />
-                              </TouchableOpacity>
-
+              </TouchableOpacity>
               <Text>{'\n'}</Text>
               <DrawerItemList {...props}/>
             </View>
@@ -91,36 +74,45 @@ export const MyDrawer = () => {
             <DrawerItem
               name="Logout" 
               label="Logout"
-              onPress={logoutHandler} // Add onPress event handler for logout
-              icon={() => <MaterialCommunityIcons name='logout' size={22}/>}
+              onPress={logoutHandler}
+              icon={() => <MaterialCommunityIcons name='logout' size={22} color="#fff" />}
+              labelStyle={{ color: '#fff' }} // White color for drawer labels
             />
+
+            {/* Add Web App Link */}
+            <DrawerItem
+              label="Open Web App"
+              onPress={() => Linking.openURL('https://galleria.pythonanywhere.com/')}
+              icon={() => <MaterialCommunityIcons name='web' size={22} color="#fff" />}
+              labelStyle={{ color: '#fff' }}
+            />
+
             <DrawerItem
               label="About"
               onPress={() => Linking.openURL('https://mrphilip.pythonanywhere.com/portfolio/galleria')}
               icon={() => (
-                <Ionicons name='information' size={22}/>
+                <Ionicons name='information' size={22} color="#fff" />
               )}
+              labelStyle={{ color: '#fff' }}
             />
-            <DrawerItem
-              label=""
-              onPress={() => {}}
-              icon={() => (
-                <Text style={{ fontSize: 10, color:"blue" }}>© Philip Titus 2024 All Rights Reserved</Text>
-              )}
-            />
+            
+            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+              <Text style={{ fontSize: 10, color: "blue" }}>
+                © Philip Titus 2024 All Rights Reserved
+              </Text>
+            </View>
           </SafeAreaView>
         );
       }}
       screenOptions={{ headerShown: false }}
-      // Disable swipe gesture to open the drawer
-      gestureEnabled={false} 
+      gestureEnabled={false} // Disable swipe gesture to open the drawer
     >
       <Drawer.Screen 
         name="HomeStack" 
         component={HomeStack} 
         options={{
           title: "My Feed",
-          drawerIcon: () => <Ionicons name='home' size={22}/>
+          drawerIcon: () => <Ionicons name='home' size={22} color="#fff" />
         }}
       />
       <Drawer.Screen 
@@ -128,7 +120,7 @@ export const MyDrawer = () => {
         component={Chat} 
         options={{
           title: "Chat",
-          drawerIcon: () => <MaterialCommunityIcons name='message' size={22}/>
+          drawerIcon: () => <MaterialCommunityIcons name='message' size={22} color="#fff" />
         }}
       />
       <Drawer.Screen 
@@ -136,9 +128,9 @@ export const MyDrawer = () => {
         component={Test} 
         options={{
           title: "Notifications",
-          drawerIcon: () => <MaterialCommunityIcons name='heart' size={22}/>
+          drawerIcon: () => <MaterialCommunityIcons name='heart' size={22} color="#fff" />
         }}
       />
     </Drawer.Navigator>
   );
-}
+};

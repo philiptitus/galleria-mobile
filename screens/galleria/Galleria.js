@@ -72,7 +72,7 @@ const Galleria = () => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate('Post', { postId: item.id })}>
-      <Image source={{ uri: API_URL + item.image }} style={styles.image} />
+      <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.itemText}>
         <Text style={styles.subtitle}>@{item.user_name}</Text>
       </View>

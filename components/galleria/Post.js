@@ -161,7 +161,7 @@ const Post = ({ date, caption, description, avi, name, id, user, currentUserEmai
             >
               {poster?.isSlice ? (
                 <View>
-                  <VideoScreen post={API_URL + poster.video} />
+                  <VideoScreen post={ poster.video} />
                 </View>
               ) : (
                 <Carousel post={poster} />

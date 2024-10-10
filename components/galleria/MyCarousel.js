@@ -12,7 +12,7 @@ const MyCarousel = ({ post }) => {
 
   const images = post && post.albums ? post.albums.map(album => ({
     label: album.id,
-    imgPath: API_URL + album.album,
+    imgPath:  album.album,
   })) : [];
 
   const scrollHandler = useAnimatedScrollHandler(event => {
