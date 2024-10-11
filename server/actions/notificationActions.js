@@ -62,6 +62,10 @@ console.log(token)
             }),
         });
 
+
+        console.log(response)
+
+
         if (!response.ok) {
             throw new Error('Failed to send token to backend');
         }

@@ -74,6 +74,7 @@ const PushNotificationSetup = () => {
       if (token) {
         await dispatch(sendTokenToBackend(token, userInfo));
         console.log(token)
+        console.log("Called from index.tsx")
       }
     }
     setupPushNotifications();
