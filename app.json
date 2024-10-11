@@ -65,12 +65,8 @@
       "eas": {
         "projectId": "b25a9cd0-9eef-4123-af1c-29d3707c8110"
       }
-    },
-    "notification": {
-      "icon": "./assets/images/notification_icon.png",
-      "color": "#ff0000"
-
     }
+
 
   }
 }
