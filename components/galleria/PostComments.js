@@ -7,18 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useRoute } from '@react-navigation/native';
 import API_URL from "@/server/constants/URL";
-import AddComment from "@/components/galleria/Comment"
+import AddComment from "@/components/galleria/Comment";
 import { listPostDetails, deleteComment } from "@/server/actions/postActions";
-
-interface ListProps {
-  avatar: boolean;
-  postId: string;
-  user: string;
-  total: number;
-  showLike?: boolean;
-  showBookmark?: boolean;
-  showComment?: boolean;
-}
 
 const Comments = () => {
   const postDetails = useSelector((state) => state.postDetails);
@@ -40,14 +30,13 @@ const Comments = () => {
   const { success: successCreate } = postCommentCreate;
 
   const postDelete = useSelector((state) => state.postDelete);
-  const { success, error: errorDelete , loading:loadingDelete} = postDelete;
+  const { success, error: errorDelete, loading: loadingDelete } = postDelete;
 
   useEffect(() => {
     if (!userInfo && isFocused) {
       navigation.navigate('Login');
     }
   }, [userInfo, isFocused, navigation]);
-
 
   useEffect(() => {
     if (userInfo) {
@@ -63,34 +52,17 @@ const Comments = () => {
     emailer: comment.comment_email,
   })) : [];
 
-
-
-
-
-  const deleteCommentHandler = (postId) => {
-    dispatch(deleteComment(postId));
-    console.log("I am being triggered with this did " + postId)
-
+  const deleteCommentHandler = (commentId) => {
+    dispatch(deleteComment(commentId));
   };
 
-  console.log(errorDelete)
-
-
-
-
-  
   useEffect(() => {
     if (Array.isArray(dynamicData)) {
       setCommentActive(dynamicData.some(commenter => commenter.emailer === userInfo.email));
     } else {
       setCommentActive(false);
     }
-    
-    // Log a message when the component is loaded
-
   }, [userInfo, dynamicData]);
-
-
 
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -114,22 +86,19 @@ const Comments = () => {
         <Text style={styles.text}>{item.text}</Text>
       </View>
       {userInfo.id === post.user && (
-  loading ? (
-    <ActivityIndicator color="red" />
-  ) : (
-    <View>
-    <Ionicons 
-      // onPress={() => deleteCommentHandler(item.id)}
-      name="trash" 
-      size={24} 
-      color="red" 
-      style={{ marginLeft: 8 }} 
-    />
-    <Text style={{ color:"red" }}> Coming soon</Text>
-    </View>
-  )
-)}
-
+        loadingDelete ? (
+          <ActivityIndicator color="red" />
+        ) : (
+          <TouchableOpacity onPress={() => deleteCommentHandler(item._id)}>
+            <Ionicons
+              name="trash"
+              size={24}
+              color="red"
+              style={{ marginLeft: 8 }}
+            />
+          </TouchableOpacity>
+        )
+      )}
     </View>
   );
 
@@ -140,12 +109,12 @@ const Comments = () => {
       ) : (
         <View>
           {!commentActive &&
-          <View>
-          <AddComment postID={postId}/>
-
+            <View>
+              <AddComment postID={postId} />
             </View>
-             }
+          }
           <Text style={styles.text}>Total Comments: {post?.total_comments}</Text>
+          {errorDelete && <Text style={{ color: 'red' }}>{errorDelete}</Text>}
           <FlatList
             data={dynamicData}
             renderItem={renderItem}

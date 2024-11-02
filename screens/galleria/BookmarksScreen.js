@@ -165,7 +165,7 @@ const BookmarksScreen = () => {
             It seems you have not saved any Post yet.
           </Text>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Galleria')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Slices')}>
             <Text style={styles.buttonText}>Browse Some Suggested Posts</Text>
           </TouchableOpacity>
         </View>

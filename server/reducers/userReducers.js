@@ -99,25 +99,6 @@
 // } 
 
 
-// export const getOtpReducer = (state = {}, action) =>{
-//     switch (action.type) {
-//         case USER_SEND_REQUEST:
-//             return { loading: true } 
-//         case USER_SEND_SUCCESS:
-//             return { loading: false, otp: action.payload, success:true }     
-//         case USER_SEND_FAIL:
-//             return { loading: false, error:action.payload }
-
-            
-//         default:
-//             return state
-    
-        
-//     }
-// } 
-
-
-
 
 
 // export const userLoginReducer = (state = {}, action) =>{
@@ -438,6 +419,9 @@ import {
     USER_UPDATE_REQUEST,
     USER_UPDATE_SUCCESS,
     USER_UPDATE_RESET,
+    USER_SEND_REQUEST,
+    USER_SEND_SUCCESS,
+    USER_SEND_FAIL,
 
 
 
@@ -694,6 +678,25 @@ export const userUpdateReducer = (state = {user:{}}, action) =>{
 
 
 
+
+
+
+export const getOtpReducer = (state = {}, action) =>{
+    switch (action.type) {
+        case USER_SEND_REQUEST:
+            return { loading: true } 
+        case USER_SEND_SUCCESS:
+            return { loading: false, otp: action.payload, success:true }     
+        case USER_SEND_FAIL:
+            return { loading: false, error:action.payload }
+
+            
+        default:
+            return state
+    
+        
+    }
+} 
 
 
 

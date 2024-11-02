@@ -93,6 +93,8 @@ const LoginScreen = () => {
     if (userInfoLogin) {
       dispatch(getUserDetails('profile'));
       showSnackbar("Welcome Back , Hold On A Sec!", 'success');
+      navigation.navigate('HomeTabs');
+
 
       setLoader(false)
 

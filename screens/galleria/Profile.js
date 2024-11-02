@@ -301,7 +301,7 @@ console.log("l")
   <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
   <View style={{}}>
     <Image
-      source={{ uri: `${API_URL}${userInfo?.avi}` }}
+      source={{ uri: user?.avi }}
       style={{ width: 100, height: 100, borderRadius: 50 }}
       onError={() => console.log('Error loading image')} // Add error handling
     />

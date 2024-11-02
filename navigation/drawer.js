@@ -28,6 +28,10 @@ export const MyDrawer = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const { user } = userDetails;
   const navigatedRef = useRef(false);
+  const [hasExpired, setHasExpired] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  const expirationTime = userInfo?.expiration_time
 
   const logoutHandler = () => {
     dispatch(logout()); // Dispatch the logout action
@@ -48,6 +52,40 @@ export const MyDrawer = () => {
       return () => clearInterval(interval); // Clear interval on component unmount
     }
   }, [userInfo, navigation]);
+
+
+  
+  useEffect(() => {
+    // Parse the expiration time string into components
+    if (userInfo) {
+      
+    const [, year, month, day, hour, minute, second] = expirationTime.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+
+    // Create a Date object with the parsed components
+    const expirationDateTime = new Date(year, month - 1, day, hour, minute, second);
+
+    // Update the state with the expiration time
+    setCurrentTime(new Date());
+    setHasExpired(expirationDateTime < new Date());
+
+    // Set up a timer to update the current time every second
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(timer);
+  }
+
+  }, [expirationTime]); // Run effect whenever expirationTime changes
+
+
+  useEffect(() => {
+    if (hasExpired) {
+      logoutHandler()
+    }
+      }, [ hasExpired]);
+
+
+      
 
   return (
     <Drawer.Navigator 
