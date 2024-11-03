@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deletePost, createLike, createBookmark, updatePost } from '@/server/actions/postActions';
 import { Modal, PaperProvider, ActivityIndicator, Snackbar, Portal } from 'react-native-paper';
 
-const PostActions = ({ currentuseremail, posteremail, likers, bookers, comments, id, showModal }) => {
+const PostActions = ({ currentuseremail, posteremail, likers, bookers, comments, id, showModal, post }) => {
   // State to manage the active state of each icon
   const [commentActive, setCommentActive] = useState(false);
   const [likeActive, setLikeActive] = useState(false);
@@ -15,8 +15,11 @@ const PostActions = ({ currentuseremail, posteremail, likers, bookers, comments,
   const { userInfo } = userLogin;
   const [visible, setVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
-  const [caption, setCaption] = useState('');
-  const [description, setDescription] = useState('');
+  const [caption, setCaption] = useState(post?.caption);
+  const [description, setDescription] = useState(post?.description);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarType, setSnackbarType] = useState(''); // 'success' or 'error'
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -90,93 +93,101 @@ const PostActions = ({ currentuseremail, posteremail, likers, bookers, comments,
 
   useEffect(() => {
     if (success) {
+      setSnackbarVisible(true);
+      setSnackbarMessage('Your post was edited successfully');
+      setSnackbarType('success');
       setEditVisible(false);
+    } else if (error) {
+      setSnackbarVisible(true);
+      setSnackbarMessage(error);
+      setSnackbarType('error');
     }
-  }, [success]);
+  }, [success, error]);
 
   return (
     <View>
-      <View style={styles.iconRow}>
-        {/* Comment Icon */}
-        <TouchableOpacity
-          onLongPress={() => navigation.navigate('Comments', { postId: id })}
-          onPress={() => navigation.navigate('Comments', { postId: id })}
-          style={styles.icon}
-        >
-          <Ionicons name="chatbubble-ellipses-outline" size={24} color={commentActive ? 'red' : 'white'} />
-        </TouchableOpacity>
-
-        {/* Like Icon */}
-        <TouchableOpacity
-          onLongPress={() => navigation.navigate('Likes', { postId: id })}
-          onPress={handleLikeClick}
-          style={styles.icon}
-        >
-          <Ionicons name="heart-outline" size={24} color={likeActive ? 'red' : 'white'} />
-        </TouchableOpacity>
-
-        {/* Bookmark Icon */}
-        <TouchableOpacity
-          onPress={handleBookmarkClick}
-          onLongPress={currentuseremail === posteremail ? handleLongPress2 : undefined}
-          style={styles.icon}
-        >
-          <Ionicons name="bookmark-outline" size={24} color={bookmarkActive ? 'red' : 'white'} />
-        </TouchableOpacity>
-
-        {currentuseremail === posteremail && (
-          <>
-            {/* Delete Icon */}
-            <TouchableOpacity onPress={handleDelete} style={styles.icon}>
-              <Ionicons name="trash-outline" size={24} color="red" />
-            </TouchableOpacity>
-
-            {/* Edit Icon */}
-            <TouchableOpacity onPress={() => setEditVisible(true)} style={styles.icon}>
-              <Ionicons name="pencil" size={24} color="red" />
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-
       <PaperProvider>
-        <Portal>
-          <Modal
-            visible={editVisible}
-            onDismiss={() => setEditVisible(false)}
-            contentContainerStyle={styles.modal}
+        <View>
+          <Portal>
+            <Modal
+              visible={editVisible}
+              onDismiss={() => setEditVisible(false)}
+              contentContainerStyle={styles.modal}
+            >
+              <TouchableOpacity onPress={() => setEditVisible(false)} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="red" />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Caption"
+                value={caption}
+                onChangeText={setCaption}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Description"
+                value={description}
+                onChangeText={setDescription}
+              />
+              {loading ? (
+                <ActivityIndicator size="small" color="red" />
+              ) : (
+                <Button title="Update" onPress={handleUpdatePost} />
+              )}
+            </Modal>
+          </Portal>
+        </View>
+
+        <View style={styles.iconRow}>
+          {/* Comment Icon */}
+          <TouchableOpacity
+            onLongPress={() => navigation.navigate('Comments', { postId: id })}
+            onPress={() => navigation.navigate('Comments', { postId: id })}
+            style={styles.icon}
           >
-            <TouchableOpacity onPress={() => setEditVisible(false)} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="red" />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              placeholder="Caption"
-              value={caption}
-              onChangeText={setCaption}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-            />
-            {loading ? (
-              <ActivityIndicator size="small" color="red" />
-            ) : (
-              <Button title="Update" onPress={handleUpdatePost} />
-            )}
-            {error && <Text style={styles.errorText}>{error}</Text>}
-            {success && <Text style={styles.successText}>{success}</Text>}
-          </Modal>
-        </Portal>
+            <Ionicons name="chatbubble-ellipses-outline" size={24} color={commentActive ? 'red' : 'white'} />
+          </TouchableOpacity>
+
+          {/* Like Icon */}
+          <TouchableOpacity
+            onLongPress={() => navigation.navigate('Likes', { postId: id })}
+            onPress={handleLikeClick}
+            style={styles.icon}
+          >
+            <Ionicons name="heart-outline" size={24} color={likeActive ? 'red' : 'white'} />
+          </TouchableOpacity>
+
+          {/* Bookmark Icon */}
+          <TouchableOpacity
+            onPress={handleBookmarkClick}
+            onLongPress={currentuseremail === posteremail ? handleLongPress2 : undefined}
+            style={styles.icon}
+          >
+            <Ionicons name="bookmark-outline" size={24} color={bookmarkActive ? 'red' : 'white'} />
+          </TouchableOpacity>
+
+          {currentuseremail === posteremail && (
+            <>
+              {/* Delete Icon */}
+              <TouchableOpacity onPress={handleDelete} style={styles.icon}>
+                <Ionicons name="trash-outline" size={24} color="red" />
+              </TouchableOpacity>
+
+              {/* Edit Icon */}
+              <TouchableOpacity onPress={() => setEditVisible(true)} style={styles.icon}>
+                <Ionicons name="pencil" size={24} color="red" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
 
         <Snackbar
-          visible={!!error || !!success}
-          onDismiss={() => {}}
-          duration={3000}
+          visible={snackbarVisible}
+          onDismiss={() => setSnackbarVisible(false)}
+          duration={1000}
+          style={snackbarType === 'success' ? styles.successSnackbar : styles.errorSnackbar}
         >
-          {error || success}
+          <Text style={styles.snackbarText}>{snackbarMessage}</Text>
         </Snackbar>
       </PaperProvider>
     </View>
@@ -201,6 +212,8 @@ const styles = StyleSheet.create({
     alignItems: 'left',
     borderRadius: 10,
     elevation: 20,
+    flexGrow: 1, // Allow the modal to grow as needed
+    minHeight: 180, // Ensure a minimum height
   },
   input: {
     height: 40,
@@ -220,6 +233,15 @@ const styles = StyleSheet.create({
   closeButton: {
     alignSelf: 'flex-end',
     marginBottom: 10,
+  },
+  successSnackbar: {
+    backgroundColor: 'green',
+  },
+  errorSnackbar: {
+    backgroundColor: 'red',
+  },
+  snackbarText: {
+    color: 'white',
   },
 });
 

@@ -100,7 +100,7 @@ const MyPost = ({ date, caption, description, avi, name, id, currentUserEmail, l
             
           <View>
             <Text style={styles.name}>{caption}</Text>
-            <PostActions currentuseremail={currentUserEmail} likers={likers} bookers={bookers} comments={comments} showModal={showModal} id={id} posteremail={name} />
+            <PostActions currentuseremail={currentUserEmail} likers={likers} bookers={bookers} comments={comments} showModal={showModal} id={id} posteremail={name} post={poster}  />
           </View>
           {description && (
             <View>
